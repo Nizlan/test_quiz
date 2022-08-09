@@ -28,54 +28,54 @@ class QuizPage extends StatelessWidget {
             child: CircularProgressIndicator(),
           ),
           loaded: (state) => state.answers.length < state.questions.length
-              ? Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Center(
-                            child: Text(state
-                                .questions[state.currentQuestion].question)),
+              ? Column(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Center(
+                          child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                            state.questions[state.currentQuestion].question),
+                      )),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: GridView.count(
+                        childAspectRatio: 1.4,
+                        addRepaintBoundaries: false,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 2,
+                        children: state
+                            .questions[state.currentQuestion].answers.entries
+                            .where((element) => element.value != null)
+                            .map((e) => Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(
+                                          Style.borderRadius)),
+                                  margin: EdgeInsets.all(12),
+                                  child: InkWell(
+                                      borderRadius: BorderRadius.circular(
+                                          Style.borderRadius),
+                                      onTap: () {
+                                        context
+                                            .read<QuizCubit>()
+                                            .answerTheQuestion(e.key ==
+                                                state
+                                                    .questions[
+                                                        state.currentQuestion]
+                                                    .correct_answer);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12),
+                                        child: AutoSizeText(e.value!),
+                                      )),
+                                ))
+                            .toList(),
                       ),
-                      Expanded(
-                        flex: 3,
-                        child: GridView.count(
-                          childAspectRatio: 1.5,
-                          addRepaintBoundaries: false,
-                          physics: const NeverScrollableScrollPhysics(),
-                          crossAxisCount: 2,
-                          children: state
-                              .questions[state.currentQuestion].answers.entries
-                              .where((element) => element.value != null)
-                              .map((e) => Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.5),
-                                        borderRadius: BorderRadius.circular(
-                                            Style.borderRadius)),
-                                    margin: EdgeInsets.all(12),
-                                    child: InkWell(
-                                        borderRadius: BorderRadius.circular(
-                                            Style.borderRadius),
-                                        onTap: () {
-                                          context
-                                              .read<QuizCubit>()
-                                              .answerTheQuestion(e.key ==
-                                                  state
-                                                      .questions[
-                                                          state.currentQuestion]
-                                                      .correct_answer);
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12),
-                                          child: AutoSizeText(e.value!),
-                                        )),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 )
               : Center(),
           orElse: () => Center(),
